@@ -1,205 +1,104 @@
-#include <iostream>
-#include <string.h>
-using namespace std;
+#include <stdio.h>
 
-char Board[11][11];
-char Figure[1], CellLetter[1], FigureCoorI[1];
-int CellNumber = 0, z = 0, g = 0, FigureCoorJ, count = 0;
+#define EMPTY -1
 
-void CellBOARD() {
-    for (int i = 1; i < 9; i++) {
-        for (int j = 1; j < 9; j++) {
-            Board[i][j] = '*';
-        }
-    }
-}
+#define WHITE 0
+#define BLACK 10
 
-void Figures() {
-    for (int i = 1; i < 9; i++) {
-        if (i == 1) {
-            Board[i][1] = 'R';//Black Rook
-            Board[i][2] = 'H';//Black Horse
-            Board[i][3] = 'B';//Black Bishop
-            Board[i][4] = 'Q';//Black Queen
-            Board[i][5] = 'K';//Black King
-            Board[i][6] = 'B';//Black Bishop
-            Board[i][7] = 'H';//Black Horse
-            Board[i][8] = 'R';//Black Rook
-        }
-        if (i == 2) {
-            for (int j = 1; j < 9; j++) {
-                Board[i][j] = 'P';//Black pawn
-            }
-        }
-        if (i == 7) {
-            for (int j = 1; j < 9; j++) {
-                Board[i][j] = 'p';//White pawn
-            }
-        }
-        if (i == 8) {
-            Board[i][1] = 'r';//White Rook
-            Board[i][2] = 'h';//White Horse
-            Board[i][3] = 'b';//White Bishop
-            Board[i][4] = 'q';//White Queen
-            Board[i][5] = 'k';//White King
-            Board[i][6] = 'b';//White Bishop
-            Board[i][7] = 'h';//White Horse
-            Board[i][8] = 'r';//White Rook
-        }
-    }
-}
+#define PAWN 0
+#define ROOK 1
+#define KNIGHT 2
+#define BISHOP 3
+#define QUEEN 4
+#define KING 5
 
-void Stroke() {
-    for (int i = 1; i < 9; i++) {
-        if (i == 1) {
-            Board[i][1] = 'R';//Black Rook
-            Board[i][2] = 'H';//Black Horse
-            Board[i][3] = 'B';//Black Bishop
-            Board[i][4] = 'Q';//Black Queen
-            Board[i][5] = 'K';//Black King
-            Board[i][6] = 'B';//Black Bishop
-            Board[i][7] = 'H';//Black Horse
-            Board[i][8] = 'R';//Black Rook
-        }
-        if (i == 2) {
-            for (int j = 1; j < 9; j++) {
-                Board[i][j] = 'P';//Black pawn
-            }
-        }
-        if (i == 7) {
-            for (int j = 1; j < 9; j++) {
-                Board[i][j] = 'p';//White pawn
-            }
-        }
-        if (i == 8) {
-            Board[i][1] = 'r';//White Rook
-            Board[i][2] = 'h';//White Horse
-            Board[i][3] = 'b';//White Bishop
-            Board[i][4] = 'q';//White Queen
-            Board[i][5] = 'k';//White King
-            Board[i][6] = 'b';//White Bishop
-            Board[i][7] = 'h';//White Horse
-            Board[i][8] = 'r';//White Rook
-        }
-    }
-    switch (CellLetter[1]) {
-    case 'A':
-        z = 1;
-        break;
-    case 'B':
-        z = 2;
-        break;
-    case 'C':
-        z = 3;
-        break;
-    case 'D':
-        z = 4;
-        break;
-    case 'E':
-        z = 5;
-        break;
-    case 'F':
-        z = 6;
-        break;
-    case 'G':
-        z = 7;
-        break;
-    case 'H':
-        z = 8;
-        break;
-    }
-    if (count == 1) {
-        int ii = 1, jj = 1;
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                if (Board[i][j] == Figure[1]) {
-                    ii = i;
-                    jj = j;
-                }
-            }
-        }
-        Board[z][CellNumber] = Board[ii][jj];
-        Board[ii][jj] = '*';
-    }
-    else {
-        Board[z][CellNumber] = Board[g][FigureCoorJ];
-        Board[g][FigureCoorJ] = '*';
-    }
-}
+int chessboard[8][8];
+int figures[] = {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK};
 
-void RepeatedShapes() {
-    count = 0;
-    for (int i = 1; i < 9; i++) {
-        for (int j = 1; j < 9; j++) {
-            if (Board[i][j] == Figure[1]) {
-                count++;
-            }
-        }
-    }
-    if (count > 1) {
-        cout << "Enter letter cell: ";
-        cin >> FigureCoorI[1];
-        cout << "Enter cell number: ";
-        cin >> FigureCoorJ;
-    }
-    switch (FigureCoorI[1]) {
-    case 'A':
-        g = 1;
+void printFigure(int figure, FILE* file)
+{
+    switch (figure) {
+    case EMPTY:
+        fprintf(file, " ");
         break;
-    case 'B':
-        g = 2;
+    case WHITE + PAWN:
+        fprintf(file, "&#9817;");
         break;
-    case 'C':
-        g = 3;
+    case WHITE + ROOK:
+        fprintf(file, "&#9814;");
         break;
-    case 'D':
-        g = 4;
+    case WHITE + KNIGHT:
+        fprintf(file, "&#9816;");
         break;
-    case 'E':
-        g = 5;
+    case WHITE + BISHOP:
+        fprintf(file, "&#9815;");
         break;
-    case 'F':
-        g = 6;
+    case WHITE + QUEEN:
+        fprintf(file, "&#9812;");
         break;
-    case 'G':
-        g = 7;
+    case WHITE + KING:
+        fprintf(file, "&#9813;");
         break;
-    case 'H':
-        g = 8;
+    case BLACK + PAWN:
+        fprintf(file, "&#9823;");
+        break;
+    case BLACK + ROOK:
+        fprintf(file, "&#9820;");
+        break;
+    case BLACK + KNIGHT:
+        fprintf(file, "&#9822;");
+        break;
+    case BLACK + BISHOP:
+        fprintf(file, "&#9821;");
+        break;
+    case BLACK + QUEEN:
+        fprintf(file, "&#9818;");
+        break;
+    case BLACK + KING:
+        fprintf(file, "&#9819;");
         break;
     }
 }
 
+void fillChessboard(int chessboard[8][8])
+{
+    // Çàïîëíÿåì ïóñòîòîé ïîëå
+    for (int n = 0; n < 8; n++) {
+        for (int m = 0; m < 8; m++) {
+            chessboard[n][m] = EMPTY;
+        }
+    }
+    // Çàïîëíÿåì ïåøêè
+    for (int i = 0; i < 8; i++) {
+        chessboard[1][i] = BLACK + PAWN;
+        chessboard[6][i] = WHITE + PAWN;
+    }
+    // Çàïîëíÿåì ôèãóğû
+    for (int i = 0; i < 8; i++) {
+        chessboard[0][i] = BLACK + figures[i];
+        chessboard[7][i] = WHITE + figures[i];
+    }
+}
 
-int main() {
-    CellBOARD();
-    Figures();
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            cout << Board[i][j] << " ";
+void printChessboard(int chessboard[8][8])
+{
+    FILE* html_file;
+    html_file = fopen("result.html", "w+");
+    fprintf(html_file, "<html><body><table border='1'>");
+    for (int n = 0; n < 8; n++) {
+        fprintf(html_file, "<tr>");
+        for (int m = 0; m < 8; m++) {
+            fprintf(html_file, "<td height='21'>");
+            printFigure(chessboard[n][m], html_file);
+            fprintf(html_file, "</td>");
         }
-        cout << endl;
+        fprintf(html_file, "</tr>");
     }
-    while (true) {
-        cout << endl;
-        cout << "Enter name figure: ";
-        cin >> Figure[1];
-        RepeatedShapes();
-        cout << "Enter the cell letter where you want to place the figure: ";
-        cin >> CellLetter[1];
-        cout << "Enter the cell number where you want to place the figure: ";
-        cin >> CellNumber;
-        if (CellNumber > 8 || CellNumber == 0) {
-            cout << "EROR";
-            continue;
-        }
-        cout << endl;
-        Stroke();
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                cout << Board[i][j] << " ";
-            }
-            cout << endl;
-        }
-    }
+    fprintf(html_file, "</table></body></html>");
+}
+
+int main()
+{
+    fillChessboard(chessboard);
+    printChessboard(chessboard);
 }
